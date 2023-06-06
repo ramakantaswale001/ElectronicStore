@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="PATTERN"
+              value="%white(%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ}) %highlight(%-5level) [%cyan(traceId: %X{x-trace-id})] [%cyan(sourceIp: %X{x-source-ip})] [%cyan(userId: %X{x-userId})] [%green(%t)] %yellow(%logger{20})::%magenta(%L): - %msg%n"/>
+    <property name="FILE_PATH" value=" ${catalina.base}/logs/transit_app.log"/>
+    <property name="ROLLING_FILE_PATH" value=" ${catalina.base}/logs/transit_app.%i.log.gz"/>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${FILE_PATH}</file>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="com.bikkadit.electronic.store.ElectronicStore.DataMaskingPatternLayout.java">
+                <maskPattern>\"disputeImage\"\s*:\s*\"(.*?)\"</maskPattern> <!-- disputeImage -->
+                <maskPattern>\"feedbackImage\"\s*:\s*\"(.*?)\"</maskPattern> <!-- feedbackImage -->
+                <pattern>${PATTERN}</pattern>
+            </layout>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${ROLLING_FILE_PATH}</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>365</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>500MB</maxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+    <appender name="DATA_MASK" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="com.bikkadit.electronic.store.ElectronicStore.DataMaskingPatternLayout.java">
+                <maskPattern>(\w+@\w+\.\w+)</maskPattern> <!-- Email -->
+                <maskPattern>(^|\D)(\d{6})($|\D)</maskPattern> <!-- OTP -->
+                <maskPattern>(^|\D)(\d{16})($|\D)</maskPattern> <!-- Card Number -->
+                <maskPattern>\"BirthDate\"\s*:\s*\"(.*?)\"</maskPattern> <!-- BirthDate -->
+                <maskPattern>\"dob\"\s*:\s*\"(.*?)\"</maskPattern> <!-- dob -->
+                <maskPattern>\"CardNo\"\s*:\s*\"(.*?)\"</maskPattern> <!-- CardNo -->
+                <maskPattern>\"disputeImage\"\s*:\s*\"(.*?)\"</maskPattern> <!-- disputeImage -->
+                <maskPattern>\"feedbackImage\"\s*:\s*\"(.*?)\"</maskPattern> <!-- feedbackImage -->
+                <pattern>${PATTERN}</pattern>
+            </layout>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender" target="System.out">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <Pattern>
+                ${PATTERN}
+            </Pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ASYNC_CONSOLE"
+              class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold> <!-- default 20, means drop lower event when has 20% capacity remaining -->
+        <appender-ref ref="DATA_MASK" />
+        <includeCallerData>false</includeCallerData><!-- default false -->
+        <neverBlock>true</neverBlock><!-- default false, set to true to cause the
+            Appender not block the application and just drop the messages -->
+    </appender>
+
+    <appender name="ASYNC_FILE"
+              class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE" />
+        <includeCallerData>false</includeCallerData><!-- default false -->
+        <neverBlock>false</neverBlock><!-- default false, set to true to cause
+            the Appender not block the application and just drop the messages -->
+    </appender>
+
+    <root level="INFO">
+        <!-- TODO: Look into Async appenders for efficiency. -->
+        <appender-ref ref="ASYNC_FILE"/>
+        <appender-ref ref="ASYNC_CONSOLE"/>
+    </root>
+
+    <!-- LOG at TRACE level -->
+    <logger name="com.bikkadit.electronic.store.ElectronicStore" level="trace" additivity="false">
+        <appender-ref ref="ASYNC_FILE"/>
+        <appender-ref ref="ASYNC_CONSOLE"/>
+    </logger>
+    <logger name="com.bikkadit.electronic.store.ElectronicStore" level="info" additivity="false">
+        <appender-ref ref="ASYNC_FILE"/>
+        <appender-ref ref="ASYNC_CONSOLE"/>
+    </logger>
+    <logger name="com.bikkadit.electronic.store.ElectronicStore" level="debug" additivity="false">
+        <appender-ref ref="ASYNC_FILE"/>
+        <appender-ref ref="ASYNC_CONSOLE"/>
+    </logger>
+
+    <logger name="com.zaxxer.hikari" level="debug" additivity="false">
+        <appender-ref ref="ASYNC_FILE"/>
+        <appender-ref ref="ASYNC_CONSOLE"/>
+    </logger>
+
+</configuration>
