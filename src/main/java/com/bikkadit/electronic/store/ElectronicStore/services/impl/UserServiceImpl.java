@@ -16,8 +16,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
+
     @Autowired
     private UserRepo userRepo;
+
     @Autowired
     private ModelMapper modelMapper;
 
@@ -26,9 +28,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(UserDto userDto) {
         User user = modelMapper.map(userDto, User.class);
-        logger.info("Initiated request  for create user");
+        logger.info("Initiated request for create user");
         User savedUser = userRepo.save(user);
-        logger.info("completed request  for create user");
+        logger.info("completed request for create user");
 
         UserDto userDto1 = modelMapper.map(savedUser, UserDto.class);
         return userDto1;
@@ -54,9 +56,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserById(String userId) {
-        logger.info("Initiated request  for get user with userId :{}",userId);
+        logger.info("Initiated request for get user with userId :{}",userId);
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new RuntimeException("user not found with userId: " + userId));
+                .orElseThrow(() -> new RuntimeException("User not found with userId: " + userId));
         logger.info("completed request for get user with userId :{}",userId);
 
         return modelMapper.map(user, UserDto.class);

@@ -11,7 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class User extends CustomeFields{
+public class User extends BaseEntities {
 
     @Id
     private String userId;

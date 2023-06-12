@@ -1,22 +1,18 @@
 package com.bikkadit.electronic.store.ElectronicStore.dtos;
 
-import com.bikkadit.electronic.store.ElectronicStore.entities.CustomeFields;
+import com.bikkadit.electronic.store.ElectronicStore.entities.BaseEntities;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto extends CustomeFields {
+public class UserDto extends BaseEntities {
 
     private String userId;
 
@@ -29,13 +25,13 @@ public class UserDto extends CustomeFields {
 
     @NotEmpty
     @Size(min = 3, max = 10, message = "pass must be btw 3-10 chars")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$")
+   // @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$")
     private String password;
 
-    @NotEmpty
+    @Size(min = 4, max = 6, message = "Invalid gender !!")
     private String gender;
 
-    @NotEmpty
+    @NotBlank(message = "Write something about yourself !!")
     private String about;
 
 

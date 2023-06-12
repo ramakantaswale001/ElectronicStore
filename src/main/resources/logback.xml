@@ -7,7 +7,7 @@
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${FILE_PATH}</file>
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-            <layout class="com.bikkadit.electronic.store.ElectronicStore.DataMaskingPatternLayout.java">
+            <layout class="com.bikkadit.electronic.store.ElectronicStore.DataMaskingPatternLayout">
                 <maskPattern>\"disputeImage\"\s*:\s*\"(.*?)\"</maskPattern> <!-- disputeImage -->
                 <maskPattern>\"feedbackImage\"\s*:\s*\"(.*?)\"</maskPattern> <!-- feedbackImage -->
                 <pattern>${PATTERN}</pattern>
@@ -26,7 +26,7 @@
 
     <appender name="DATA_MASK" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-            <layout class="com.bikkadit.electronic.store.ElectronicStore.DataMaskingPatternLayout.java">
+            <layout class="com.bikkadit.electronic.store.ElectronicStore.DataMaskingPatternLayout">
                 <maskPattern>(\w+@\w+\.\w+)</maskPattern> <!-- Email -->
                 <maskPattern>(^|\D)(\d{6})($|\D)</maskPattern> <!-- OTP -->
                 <maskPattern>(^|\D)(\d{16})($|\D)</maskPattern> <!-- Card Number -->

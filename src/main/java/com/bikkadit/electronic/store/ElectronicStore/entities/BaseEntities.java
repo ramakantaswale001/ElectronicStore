@@ -4,10 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
@@ -17,20 +17,23 @@ import java.time.LocalDateTime;
 //@Embeddable
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class CustomeFields {
+public class BaseEntities {
 
-    @Column(name = "is_active_switch")
+    @Column(name = "is_active")
     private String isactive;
 
     @Column(name = "created_by")
     private String createdBy;
 
-    @Column(name = "create_date", updatable = false)
+    @Column(name = "created_date", updatable = false)
     @CreationTimestamp
     private LocalDateTime createdOn;
 
-    @Column(name = "modified_by")
+    @Column(name = "updated_by")
     @LastModifiedBy
-    private String lastModifiedBy;
+    private String updatedBy;
 
+    @LastModifiedDate
+    @Column(name = "updated_date")
+    private String updatedOn;
 }
