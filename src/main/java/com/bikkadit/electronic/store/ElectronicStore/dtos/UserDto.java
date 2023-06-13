@@ -1,6 +1,7 @@
 package com.bikkadit.electronic.store.ElectronicStore.dtos;
 
 import com.bikkadit.electronic.store.ElectronicStore.entities.BaseEntities;
+import com.bikkadit.electronic.store.ElectronicStore.validate.ImageNameValid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,8 @@ public class UserDto extends BaseEntities {
     @Size(min = 3, message = "name must be min of 3 charactors!!")
     private String name;
 
-    @Email(message = "email address is not valid")
+    //@Email(message = "email address is not valid")
+    @Pattern(regexp = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$", message = "email address is not valid")
     private String email;
 
     @NotEmpty
@@ -34,6 +36,6 @@ public class UserDto extends BaseEntities {
     @NotBlank(message = "Write something about yourself !!")
     private String about;
 
-
+    @ImageNameValid
     private String imageName;
 }

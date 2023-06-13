@@ -3,12 +3,17 @@ package com.bikkadit.electronic.store.ElectronicStore.services.impl;
 import com.bikkadit.electronic.store.ElectronicStore.controllers.UserController;
 import com.bikkadit.electronic.store.ElectronicStore.dtos.UserDto;
 import com.bikkadit.electronic.store.ElectronicStore.entities.User;
+import com.bikkadit.electronic.store.ElectronicStore.exceptions.ResourceNotFoundException;
 import com.bikkadit.electronic.store.ElectronicStore.repositories.UserRepo;
 import com.bikkadit.electronic.store.ElectronicStore.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,7 +44,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUser(UserDto userDto, String userId) {
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new RuntimeException("user not found with userId: " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("user not found with userId: " + userId));
 
         user.setName(userDto.getName());
 
@@ -58,7 +63,7 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserById(String userId) {
         logger.info("Initiated request for get user with userId :{}",userId);
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with userId: " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with userId: " + userId));
         logger.info("completed request for get user with userId :{}",userId);
 
         return modelMapper.map(user, UserDto.class);
@@ -68,16 +73,23 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserByEmail(String email) {
         logger.info("Initiated request  for get user by email with email :{}",email);
         User user = userRepo.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("user not found with email: " + email));
+                .orElseThrow(() -> new ResourceNotFoundException("user not found with email: " + email));
         logger.info("completed request for get user by email with email :{}",email);
 
         return modelMapper.map(user,UserDto.class);
     }
 
     @Override
-    public List<UserDto> getAllUsers() {
+    public List<UserDto> getAllUsers(int pageNumber,int pageSize,String sortBy,String sortDir) {
+        //pageNumber default start from zero
+//        Sort sort = Sort.by(sortBy);
+        Sort sort = (sortDir.equalsIgnoreCase("desc")) ? (Sort.by(sortBy).descending()) : (Sort.by(sortBy).ascending());
+        Pageable pageable = PageRequest.of(pageNumber,pageSize,sort);
+
         logger.info("Initiated request  for getAll user");
-        List<User> allUsers = userRepo.findAll();
+        Page<User> page = userRepo.findAll(pageable);
+        List<User> allUsers = page.getContent();
+
         logger.info("completed request for getAll user");
         List<UserDto> list = allUsers.stream()
                 .map((user) -> modelMapper.map(user, UserDto.class))
@@ -90,7 +102,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(String userId) {
 
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new RuntimeException("user not found with userId: " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("user not found with userId: " + userId));
         logger.info("Initiated request  for delete user with userId :{}",userId);
         userRepo.delete(user);
         logger.info("completed request for delete user with userId :{}",userId);
