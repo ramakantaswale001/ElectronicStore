@@ -1,5 +1,6 @@
 package com.bikkadit.electronic.store.ElectronicStore.services;
 
+import com.bikkadit.electronic.store.ElectronicStore.dtos.PageableResponse;
 import com.bikkadit.electronic.store.ElectronicStore.dtos.UserDto;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ public interface UserService {
     UserDto getUserById(String userId);
 
     UserDto getUserByEmail(String email);
-    List<UserDto> getAllUsers(int pageNumber,int pageSize,String sortBy,String sortDir);
+    PageableResponse<UserDto> getAllUsers(int pageNumber, int pageSize, String sortBy, String sortDir);
 
     void deleteUser(String userId);
 
