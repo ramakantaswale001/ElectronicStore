@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @RestControllerAdvice
 public class GlobalEceptionHandler {
@@ -42,5 +41,13 @@ public class GlobalEceptionHandler {
         });
         return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
 
+    }
+
+    @ExceptionHandler(BadApiRequestException.class)
+    public ResponseEntity<ApiResponseMessage> handleBadApiRequest(BadApiRequestException exception){
+
+        logger.info("Bad Request Handler Invoked !!");
+        ApiResponseMessage responseMessage = ApiResponseMessage.builder().message(exception.getMessage()).status(HttpStatus.BAD_REQUEST).success(false).build();
+        return new ResponseEntity<>(responseMessage,HttpStatus.BAD_REQUEST);
     }
 }
