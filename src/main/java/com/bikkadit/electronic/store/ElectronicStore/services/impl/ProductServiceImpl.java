@@ -1,12 +1,19 @@
 package com.bikkadit.electronic.store.ElectronicStore.services.impl;
 
+import com.bikkadit.electronic.store.ElectronicStore.dtos.PageableResponse;
 import com.bikkadit.electronic.store.ElectronicStore.dtos.ProductDto;
+import com.bikkadit.electronic.store.ElectronicStore.dtos.UserDto;
 import com.bikkadit.electronic.store.ElectronicStore.entities.Product;
 import com.bikkadit.electronic.store.ElectronicStore.exceptions.ResourceNotFoundException;
+import com.bikkadit.electronic.store.ElectronicStore.helpers.Helper;
 import com.bikkadit.electronic.store.ElectronicStore.repositories.ProductRepo;
 import com.bikkadit.electronic.store.ElectronicStore.services.ProductService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -54,19 +61,35 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> getAll() {
-        return null;
-    }
-
-
-
-    @Override
-    public List<ProductDto> getAllLive() {
-        return null;
+    public PageableResponse<ProductDto> getAll(int pageNumber, int pageSize, String sortBy, String sortDir) {
+        //pageNumber default start from zero
+        //Sort sort = Sort.by(sortBy);
+        Sort sort = (sortDir.equalsIgnoreCase("desc")) ? (Sort.by(sortBy).descending()) : (Sort.by(sortBy).ascending());
+        Pageable pageable = PageRequest.of(pageNumber-1,pageSize,sort);
+        Page<Product> page = productRepo.findAll(pageable);
+        return Helper.getPageableResponse(page, ProductDto.class);
     }
 
     @Override
-    public List<ProductDto> searchByTitle(String subTitle) {
-        return null;
+    public PageableResponse<ProductDto> getAllLive(int pageNumber, int pageSize, String sortBy, String sortDir) {
+        //pageNumber default start from zero
+        //Sort sort = Sort.by(sortBy);
+        Sort sort = (sortDir.equalsIgnoreCase("desc")) ? (Sort.by(sortBy).descending()) : (Sort.by(sortBy).ascending());
+        Pageable pageable = PageRequest.of(pageNumber-1,pageSize,sort);
+        Page<Product> byLiveTrue = productRepo.findByLiveTrue(pageable);
+        return Helper.getPageableResponse(byLiveTrue, ProductDto.class);
     }
+
+    @Override
+    public PageableResponse<ProductDto> searchByTitle(String subTitle, int pageNumber, int pageSize, String sortBy, String sortDir) {
+
+        //pageNumber default start from zero
+        //Sort sort = Sort.by(sortBy);
+        Sort sort = (sortDir.equalsIgnoreCase("desc")) ? (Sort.by(sortBy).descending()) : (Sort.by(sortBy).ascending());
+        Pageable pageable = PageRequest.of(pageNumber-1,pageSize,sort);
+        Page<Product> byLiveTrue = productRepo.findByTitleContaining(subTitle,pageable);
+        return Helper.getPageableResponse(byLiveTrue, ProductDto.class);
+    }
+
+
 }
