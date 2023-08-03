@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,7 +26,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+@Service
 public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
@@ -34,7 +35,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private ModelMapper modelMapper;
 
-    @Value("${user.profile.image.path}")
+    @Value("${category.cover.image.path}")
     private String imagePath;
 
     Logger logger = LoggerFactory.getLogger(CategoryServiceImpl.class);
@@ -122,7 +123,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryDto> searchCategory(String keyword) {
         logger.info("Initiated request in service layer for search category ");
-        List<Category> categories = categoryRepo.findByNameContaining(keyword);
+        List<Category> categories = categoryRepo.findByTitleContaining(keyword);
         logger.info("completed request in service layer for search category ");
         List<CategoryDto> categoryDtoList = categories.stream()
                 .map((cat) -> modelMapper.map(cat, CategoryDto.class))

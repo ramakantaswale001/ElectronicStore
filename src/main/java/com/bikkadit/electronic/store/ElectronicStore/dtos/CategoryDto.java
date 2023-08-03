@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.Column;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -15,8 +16,8 @@ public class CategoryDto {
 
     private String categoryId;
 
-    @NotBlank
-    @Min(value = 4,message = "title must of minimum 4 charactor")
+    @NotBlank(message = "title is required!!")
+    @Size(min = 4,message = "title must of minimum 4 charactor")
     private String title;
 
     @NotBlank(message = "Description required !!")

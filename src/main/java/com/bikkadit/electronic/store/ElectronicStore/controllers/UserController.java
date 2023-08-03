@@ -80,7 +80,7 @@ public class UserController {
      */
     @GetMapping()
     public ResponseEntity<PageableResponse<UserDto>> getAllUser(
-            @RequestParam(value = "pageNumber",defaultValue = "0",required = false) int pageNumber ,
+            @RequestParam(value = "pageNumber",defaultValue = "1",required = false) int pageNumber ,
             @RequestParam(value = "pageSize",defaultValue = "5",required = false) int pageSize,
             @RequestParam(value = "sortBy",defaultValue = "name",required = false) String sortBy,
             @RequestParam(value = "sortDir",defaultValue = "asc",required = false) String sortDir

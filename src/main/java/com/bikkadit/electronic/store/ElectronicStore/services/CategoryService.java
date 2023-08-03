@@ -2,11 +2,11 @@ package com.bikkadit.electronic.store.ElectronicStore.services;
 
 import com.bikkadit.electronic.store.ElectronicStore.dtos.CategoryDto;
 import com.bikkadit.electronic.store.ElectronicStore.dtos.PageableResponse;
-import com.bikkadit.electronic.store.ElectronicStore.dtos.UserDto;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-
+@Service
 public interface CategoryService {
 
     CategoryDto create(CategoryDto categoryDto);
