@@ -13,8 +13,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.InputStream;
 
 
 @RestController
@@ -27,7 +31,7 @@ public class ProductController {
     @Autowired
     private FileService fileService;
 
-    @Value("${category.cover.image.path}")
+    @Value("${product.image.path}")
     private String imageUploadPath;
 
     Logger logger = LoggerFactory.getLogger(ProductController.class);
@@ -158,32 +162,32 @@ public class ProductController {
 
     // upload user image
 
-//    @PostMapping("image/{categoryId}")
-//    public ResponseEntity<ImageResponse> uploadCategoryImage(
-//            @RequestParam("categoryImage") MultipartFile image,
-//            @PathVariable String productId)
-//            throws IOException {
-//
-//        String imageName = fileService.uploadImage(image, imageUploadPath);
-//
-//        CategoryDto category = productService.getCategoryById(productId);
-//        category.setCoverImage(imageName);
-//        productService.update(category,productId);
-//
-//        ImageResponse imageResponse = ImageResponse.builder().imageName(imageName).message("image uploaded successfully !!").success(true).status(HttpStatus.CREATED).build();
-//
-//        return new ResponseEntity<>(imageResponse,HttpStatus.CREATED);
-//    }
-//
-//    // serve user image
-//
-//    @GetMapping("/image/{categoryId}")
-//    public void serveCategoryImage(@PathVariable String productId, HttpServletResponse response) throws IOException {
-//        CategoryDto categoryDto = productService.getCategoryById(productId);
-//        logger.info("Category image name : "+categoryDto.getCoverImage());
-//        InputStream resource = fileService.getResource(imageUploadPath, categoryDto.getCoverImage());
-//        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
-//        StreamUtils.copy(resource,response.getOutputStream());
-//
-//    }
+    @PostMapping("image/{productId}")
+    public ResponseEntity<ImageResponse> uploadImage(
+            @RequestParam("productImage") MultipartFile image,
+            @PathVariable String productId)
+            throws IOException {
+
+        String imageName = fileService.uploadImage(image, imageUploadPath);
+
+        ProductDto productDto = productService.get(productId);
+        productDto.setProductImageName(imageName);
+        productService.update(productDto,productId);
+
+        ImageResponse imageResponse = ImageResponse.builder().imageName(imageName).message("image uploaded successfully !!").success(true).status(HttpStatus.CREATED).build();
+
+        return new ResponseEntity<>(imageResponse,HttpStatus.CREATED);
+    }
+
+    // serve user image
+
+    @GetMapping("/image/{productId}")
+    public void serveImage(@PathVariable String productId, HttpServletResponse response) throws IOException {
+        ProductDto productDto = productService.get(productId);
+        logger.info("product image name : "+productDto.getProductImageName());
+        InputStream resource = fileService.getResource(imageUploadPath, productDto.getProductImageName());
+        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        StreamUtils.copy(resource,response.getOutputStream());
+
+    }
 }

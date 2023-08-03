@@ -23,6 +23,5 @@ public class CategoryDto {
     @NotBlank(message = "Description required !!")
     private String description;
 
-
     private String coverImage;
 }

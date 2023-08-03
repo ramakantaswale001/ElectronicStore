@@ -3,6 +3,7 @@ package com.bikkadit.electronic.store.ElectronicStore.controllers;
 import com.bikkadit.electronic.store.ElectronicStore.dtos.*;
 import com.bikkadit.electronic.store.ElectronicStore.services.CategoryService;
 import com.bikkadit.electronic.store.ElectronicStore.services.FileService;
+import com.bikkadit.electronic.store.ElectronicStore.services.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private ProductService productService;
 
     @Autowired
     private FileService fileService;
@@ -166,6 +170,18 @@ public class CategoryController {
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         StreamUtils.copy(resource,response.getOutputStream());
 
+    }
+
+    // create product with category
+    @PostMapping("/{categoryId}/products")
+    public ResponseEntity<ProductDto> createProductWithCategory(
+            @PathVariable("categoryId") String categoryId,
+            @Valid @RequestBody ProductDto productDto
+    ){
+        logger.info("Initiated request in controller layer for create product with category");
+        ProductDto productDto1 = productService.createWithCategory(productDto, categoryId);
+        logger.info("completed request in controller layer for create product with category");
+        return new ResponseEntity<>(productDto1, HttpStatus.CREATED);
     }
 
 }
