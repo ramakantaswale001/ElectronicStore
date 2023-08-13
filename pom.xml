@@ -11,6 +11,7 @@
 	<groupId>com.bikkadit.electronic.store</groupId>
 	<artifactId>ElectronicStore</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<name>ElectronicStore</name>
 	<description>Spring Boot on electronic store</description>
 	<properties>

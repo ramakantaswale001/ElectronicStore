@@ -184,4 +184,32 @@ public class CategoryController {
         return new ResponseEntity<>(productDto1, HttpStatus.CREATED);
     }
 
+    // update category of product
+    @PutMapping("/{categoryId}/products/{productId}")
+    public ResponseEntity<ProductDto> updateCategoryOfProduct(
+            @PathVariable("categoryId") String categoryId,
+            @PathVariable("productId") String productId
+    ){
+        logger.info("Initiated request in controller layer for update Category Of Product");
+        ProductDto productDto1 = productService.updateCategory(productId, categoryId);
+        logger.info("completed request in controller layer for update Category Of Product");
+        return new ResponseEntity<>(productDto1, HttpStatus.OK);
+    }
+
+    @GetMapping("/{categoryId}/products")
+    public ResponseEntity<PageableResponse<ProductDto>>getProductsOfCategory(
+            @PathVariable String categoryId,
+            @RequestParam(value = "pageNumber",defaultValue = "1",required = false) int pageNumber ,
+            @RequestParam(value = "pageSize",defaultValue = "5",required = false) int pageSize,
+            @RequestParam(value = "sortBy",defaultValue = "title",required = false) String sortBy,
+            @RequestParam(value = "sortDir",defaultValue = "asc",required = false) String sortDir
+    ) {
+
+        logger.info("Initiated request in controller layer for getAllOfCategory product");
+        PageableResponse<ProductDto> allOfCategory = productService.getAllOfCategory(categoryId, pageNumber, pageSize, sortBy, sortDir);
+        logger.info("completed request in controller layer for getAllOfCategory product");
+        return new ResponseEntity<>(allOfCategory,HttpStatus.OK);
+
+    }
+
 }
